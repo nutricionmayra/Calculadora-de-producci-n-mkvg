@@ -1,0 +1,15 @@
+
+{
+  "name": "Calculadora Producción BARF",
+  "short_name": "BARF Calc",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4CAF50",
+  "description": "Calculadora profesional de dieta BARF para perros",
+  "icons": [{
+    "src": "icon.png",
+    "type": "image/png",
+    "sizes": "192x192"
+  }]
+}

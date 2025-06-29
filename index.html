@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora Producción BARF</title>
+  <link rel="manifest" href="manifest.json" />
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('Service Worker registrado', reg))
+        .catch(err => console.error('Error al registrar el Service Worker', err));
+    }
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 6px;
+      box-sizing: border-box;
+    }
+    .total {
+      font-weight: bold;
+      background: #eef;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Calculadora de Producción BARF</h1>
+    <label for="totalKg">Cantidad total a preparar (kg):</label>
+    <input type="number" id="totalKg" value="10" min="1" step="0.1" oninput="calcular()" />
+    <table>
+      <thead>
+        <tr>
+          <th>Ingrediente</th>
+          <th>%</th>
+          <th>Cantidad (kg)</th>
+          <th>Precio (S/.)</th>
+          <th>Subtotal (S/.)</th>
+          <th>Función Nutricional</th>
+          <th>Valor Nutricional</th>
+        </tr>
+      </thead>
+      <tbody id="tabla"></tbody>
+      <tfoot>
+        <tr class="total">
+          <td colspan="4">Total</td>
+          <td id="totalSoles">S/. 0.00</td>
+          <td colspan="2"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <script>
+    const ingredientes = [
+      { nombre: "Huesos carnosos", porcentaje: 60, precio: 5, funcion: "Fuente de calcio y colágeno", valor: "Calcio, colágeno" },
+      { nombre: "Carne magra", porcentaje: 20, precio: 10, funcion: "Proteínas y energía", valor: "Proteínas, hierro" },
+      { nombre: "Vísceras", porcentaje: 10, precio: 6, funcion: "Vitaminas y minerales", valor: "Vitamina A, hierro" },
+      { nombre: "Frutas y verduras", porcentaje: 10, precio: 3, funcion: "Fibra y antioxidantes", valor: "Fibra, vitamina C" },
+      { nombre: "Avena cocida", porcentaje: 5, precio: 4, funcion: "Fibra y energía lenta", valor: "Carbohidratos, fibra" },
+      { nombre: "Semillas (chía/girasol)", porcentaje: 2, precio: 15, funcion: "Omega-3 y antioxidantes", valor: "Omega-3, vitamina E" }
+    ];
+
+    function calcular() {
+      const totalKg = parseFloat(document.getElementById('totalKg').value);
+      const tabla = document.getElementById('tabla');
+      tabla.innerHTML = '';
+      let total = 0;
+
+      ingredientes.forEach(ing => {
+        const cantidad = (ing.porcentaje / 100) * totalKg;
+        const subtotal = cantidad * ing.precio;
+        total += subtotal;
+
+        const fila = `
+          <tr>
+            <td>${ing.nombre}</td>
+            <td>${ing.porcentaje}%</td>
+            <td>${cantidad.toFixed(2)}</td>
+            <td>S/. ${ing.precio.toFixed(2)}</td>
+            <td>S/. ${subtotal.toFixed(2)}</td>
+            <td>${ing.funcion}</td>
+            <td>${ing.valor}</td>
+          </tr>
+        `;
+        tabla.innerHTML += fila;
+      });
+
+      document.getElementById('totalSoles').innerText = `S/. ${total.toFixed(2)}`;
+    }
+
+    calcular();
+  </script>
+</body>
+</html>
